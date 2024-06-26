@@ -36,17 +36,11 @@ services, assert responses, and extract data from HTML/XML/JSON responses.
 
 ## Installation
 
-- [Download and extract the archive of the latest version](https://github.com/blackfireio/lando-plugin/releases);
-- Move the extracted `blackfire` folder to the Lando plugins folder:
+- Install the plugin with the lando cli:
 
 ```bash
-mv blackfire ~/.lando/plugins/
+lando plugin-add https://github.com/blackfireio/lando-plugin.git
 ```
-
-> If the `plugins` directory doesn't exist, create it:
-> ```bash
-> mkdir -p ~/.lando/plugins
-> ```
 
 ## Configuration
 
@@ -101,8 +95,9 @@ services:
 
 ## Known Limitations
 
-- It only works with Debian-based application containers, which is the case for
-  most Lando recipes;
-- The probe is automatically installed in PHP application services. For Python,
-  you need to install the PIP package and use `blackfire-python` instead of
-  `python`.
+- It only works with application containers, which have curl, tar and bash installed.
+- The probe is automatically installed in PHP application services (type: php*).
+  - For custom php services add `app_service_is_php: true` to your blackfire service config
+  - For Python,
+    you need to install the PIP package and use `blackfire-python` instead of
+    `python`.

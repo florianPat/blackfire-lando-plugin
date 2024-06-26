@@ -9,7 +9,7 @@ EXTENSION_DIR=$(php -i | grep "^extension_dir =>" | sed -nE "s/extension_dir => 
 
 ARCHITECTURE=$(uname -m)
 echo "Installing Blackfire Probe for PHP ($ARCHITECTURE)"
-(cd /tmp && wget -nv -N "https://blackfire.io/api/v1/releases/probe/php/linux/$ARCHITECTURE/$PHP_VERSION")
+(cd /tmp && curl -LsS "https://blackfire.io/api/v1/releases/probe/php/linux/$ARCHITECTURE/$PHP_VERSION" -o $PHP_VERSION)
 tar -xzf /tmp/$PHP_VERSION -C $EXTENSION_DIR/
 mv $EXTENSION_DIR/blackfire-*.so $EXTENSION_DIR/blackfire.so
 rm $EXTENSION_DIR/blackfire-*.sha

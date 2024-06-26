@@ -2,7 +2,7 @@
 
 // Modules
 const _ = require('lodash');
-const utils = require('./../../lib/utils');
+const utils = require('./../lib/utils');
 
 // Builder
 module.exports = {
@@ -18,8 +18,10 @@ module.exports = {
         app_service: 'appserver',
         port: '8307',
         meUser: 'blackfire', // Ensure to use the appropriate user within the container.
+        appMount: '/',
+        app_service_is_php: false,
     },
-    parent: '_service',
+    parent: '_compose',
     builder: (parent, config) => class LandoBlackfire extends parent {
         constructor(id, options = {}) {
             options = _.merge({}, config, options);
@@ -34,6 +36,7 @@ module.exports = {
             // Define the Blackfire service.
             const blackfire = {
                 image: `blackfire/blackfire:${options.version}`,
+                entrypoint: '/helpers/lando-entrypoint.sh',
                 command: '/usr/local/bin/entrypoint.sh blackfire agent:start',
                 environment: {
                     BLACKFIRE_SERVER_ID: options.server_id,
@@ -45,7 +48,7 @@ module.exports = {
             };
 
             const appService = _.get(options._app, `config.services.${options.app_service}`);
-            if (appService.type.includes('php')) {
+            if (appService.type?.includes('php') || options.app_service_is_php) {
                 utils.addBuildStep(
                     [
                         '/helpers/install-blackfire-probe.sh',
@@ -61,8 +64,18 @@ module.exports = {
                 utils.addBuildStep(['/helpers/install-blackfire-cli.sh'], options._app, options.app_service, 'build_as_root_internal');
             }
 
+            _.set(options._app, `config.services.${options.name}.appMount`, options.appMount);
+
+            const info = {}
+            info.config = config;
+            info.service = options.name;
+            info.type = config.type;
+            info.version = config.version;
+            info.meUser = config.meUser;
+            info.api = 3;
+
             // Send it downstream
-            super(id, options, {services: _.set({}, options.name, blackfire)});
+            super(id, info, {services: _.set({}, options.name, blackfire)});
         };
     },
 };

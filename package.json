@@ -1,4 +1,15 @@
 {
+  "name": "@blackfireio/blackfire-lando-plugin",
+  "version": "1.0.4",
+  "author": "blackfire.io",
+  "keywords": [
+    "lando",
+    "lando-plugin",
+    "blackfire"
+  ],
+  "lando": {
+    "legacy": true
+  },
   "dependencies": {
     "lodash": "^4.17.21"
   }

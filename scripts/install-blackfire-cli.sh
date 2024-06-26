@@ -5,7 +5,7 @@ if [[ ! -e /usr/local/bin/blackfire ]]; then
   echo "Installing the latest version of Blackfire CLI"
   cd /tmp
   ARCHITECTURE=$(uname -m)
-  wget -nv -O blackfire.tar.gz -L "https://blackfire.io/api/v1/releases/cli/linux/$ARCHITECTURE"
+  curl -LsS "https://blackfire.io/api/v1/releases/cli/linux/$ARCHITECTURE" -o blackfire.tar.gz
   tar -xzf blackfire.tar.gz
   chmod +x blackfire
   cp blackfire /usr/local/bin/blackfire
